@@ -1,9 +1,9 @@
-swagger: '2.0'
+swagger: "2.0"
 info:
   title: Bank Argent API documentation
   description: Contains all available API endpoints in this codebase
-  version: '1.0.0'
-  termsOfService: 'http://swagger.io/terms/'
+  version: "1.0.0"
+  termsOfService: "http://swagger.io/terms/"
 host: localhost:3001
 basePath: /api/v1
 schemes:
@@ -21,17 +21,17 @@ paths:
           description: Login Payload
           required: true
           schema:
-            $ref: '#/definitions/Login'
+            $ref: "#/definitions/Login"
       produces:
         - application/json
       responses:
-        '200':
+        "200":
           description: Login Successfully
           schema:
-            $ref: '#/definitions/LoginResponse'
-        '400':
+            $ref: "#/definitions/LoginResponse"
+        "400":
           description: Invalid Fields
-        '500':
+        "500":
           description: Internal Server Error
   /user/signup:
     post:
@@ -45,17 +45,17 @@ paths:
           description: Signup Payload
           required: true
           schema:
-            $ref: '#/definitions/User'
+            $ref: "#/definitions/User"
       produces:
         - application/json
       responses:
-        '200':
+        "200":
           description: Signup Successfully
           schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
+            $ref: "#/definitions/ApiResponse"
+        "400":
           description: Invalid Fields
-        '500':
+        "500":
           description: Internal Server Error
   /user/profile:
     post:
@@ -66,15 +66,15 @@ paths:
       summary: User Profile API
       description: API for fetching a user profile
       #produces:
-       # - application/json
+      # - application/json
       responses:
-        '200':
+        "200":
           description: User profile retrieved successully
           schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
+            $ref: "#/definitions/ApiResponse"
+        "400":
           description: Invalid Fields
-        '500':
+        "500":
           description: Internal Server Error
     put:
       security:
@@ -89,18 +89,137 @@ paths:
           description: Update user profile attributes
           required: true
           schema:
-            $ref: '#/definitions/UserProfile'
+            $ref: "#/definitions/UserProfile"
       produces:
         - application/json
       responses:
-        '200':
+        "200":
           description: User profile retrieved successully
           schema:
-            $ref: '#/definitions/ApiResponse'
-        '400':
+            $ref: "#/definitions/ApiResponse"
+        "400":
           description: Invalid Fields
-        '500':
+        "500":
           description: Internal Server Error
+  /accounts/{accountId}/transactions:
+    get:
+      tags:
+        - Transactions
+      summary: Get all transactions
+      description: Retrieves all transactions for the current month, grouped by account.
+      operationId: getAllTransactions
+      produces:
+        - application/json
+      parameters:
+        - name: accountId
+          in: query
+          description: The ID of the account to filter transactions.
+          required: false
+          type: string
+      responses:
+        200:
+          description: Successful response.
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Transaction"
+        404:
+          description: Transactions not found.
+  /transactions:
+    post:
+      tags:
+        - Transactions
+      summary: Add a new transaction
+      description: Adds new information about a transaction.
+      operationId: addTransaction
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: The new transaction information.
+          required: true
+          schema:
+            $ref: "#/definitions/NewTransaction"
+      responses:
+        201:
+          description: Transaction successfully added.
+        400:
+          description: Validation error.
+  /transactions/{transactionId}:
+    get:
+      tags:
+        - Transactions
+      summary: Get transaction details
+      description: Retrieves the details of a specific transaction.
+      operationId: getTransactionById
+      produces:
+        - application/json
+      parameters:
+        - name: transactionId
+          in: path
+          description: The ID of the transaction to retrieve.
+          required: true
+          type: string
+      responses:
+        200:
+          description: Successful response.
+          schema:
+            $ref: "#/definitions/Transaction"
+        404:
+          description: Transaction not found.
+    put:
+      tags:
+        - Transactions
+      summary: Update transaction information
+      description: Updates information about a specific transaction.
+      operationId: updateTransaction
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: The ID of the transaction to update.
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateTransaction"
+      responses:
+        200:
+          description: Transaction successfully updated.
+        400:
+          description: Validation error.
+        404:
+          description: Transaction not found.
+    delete:
+      tags:
+        - Transactions
+      summary: Delete Transaction
+      description: Delete the information of a specific transaction.
+      operationId: deleteTransaction
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: string
+            $ref: "#/definitions/Transaction"
+          description: The ID of the transaction to delete.
+      responses:
+        200:
+          description: Transaction deleted successfully.
+        404:
+          description: Transaction not found
+        500:
+          description: Internal Server Error
+
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -156,3 +275,50 @@ definitions:
     properties:
       userName:
         type: string
+  NewTransaction:
+    type: object
+    properties:
+      accountId:
+        type: string
+        description: ID of the account.
+      amount:
+        type: number
+        description: Transaction amount.
+      date:
+        type: string
+        format: date
+        description: Date of the transaction.
+      description:
+        type: string
+        description: Description of the transaction.
+  Transaction:
+    type: object
+    properties:
+      id:
+        type: string
+        description: ID of the transaction.
+      accountId:
+        type: string
+        description: ID of the account.
+      amount:
+        type: number
+        description: Transaction amount.
+      date:
+        type: string
+        format: date
+        description: Date of the transaction.
+      description:
+        type: string
+        description: Description of the transaction.
+  UpdateTransaction:
+    type: object
+    properties:
+      id:
+        type: string
+        description: ID of the transaction.
+      amount:
+        type: number
+        description: Transaction amount.
+      description:
+        type: string
+        description: Description of the transaction.

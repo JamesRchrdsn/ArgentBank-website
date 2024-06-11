@@ -129,7 +129,7 @@ paths:
     post:
       tags:
         - Transactions
-      summary: Add a new transaction
+      summary: Add a new information transaction
       description: Adds new information about a transaction.
       operationId: addTransaction
       consumes:

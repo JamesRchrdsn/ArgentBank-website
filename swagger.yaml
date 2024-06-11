@@ -281,9 +281,6 @@ definitions:
       accountId:
         type: string
         description: ID of the account.
-      amount:
-        type: number
-        description: Transaction amount.
       date:
         type: string
         format: date

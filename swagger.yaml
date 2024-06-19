@@ -101,7 +101,7 @@ paths:
           description: Invalid Fields
         "500":
           description: Internal Server Error
-  /transactions:
+  /accounts/{accountID}/transactions:
     get:
       security:
         - Bearer: []
@@ -124,7 +124,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: "#/definitions/NewTransaction"
+              $ref: "#/definitions/Transaction"
         401:
           description: Unauthorized.
         404:
@@ -147,13 +147,13 @@ paths:
           description: The new transaction information.
           required: true
           schema:
-            $ref: "#/definitions/NewTransaction"
+            $ref: "#/definitions/Transaction"
       responses:
         201:
           description: Transaction successfully added.
         400:
           description: Validation error.
-  /transactions/{transactionId}:
+  /accounts/{accountID}/transactions/{transactionId}:
     get:
       security:
         - Bearer: []
@@ -286,31 +286,9 @@ definitions:
     properties:
       userName:
         type: string
-  NewTransaction:
-    type: object
-    properties:
-      accountId:
-        type: string
-        description: ID of the account.
-      amount:
-        type: number
-        description: Transaction amount.
-      date:
-        type: string
-        format: date
-        description: Date of the transaction.
-      description:
-        type: string
-        description: Description of the transaction.
   Transaction:
     type: object
     properties:
-      transactionId:
-        type: string
-        description: ID of the transaction.
-      accountId:
-        type: string
-        description: ID of the account.
       amount:
         type: number
         description: Transaction amount.
